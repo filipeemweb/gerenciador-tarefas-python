@@ -12,4 +12,12 @@ SENHA_TEST = 'Admin1234@'
 gen = string.ascii_letters + string.digits + string.ascii_uppercase
 SECRET_KEY = ''.join(random.choice(gen) for i in range(32))
 
+# Configuração MySQL
+MYSQL_HOST = 'mysqlgerenciadortarefas.cthsjafbiu8h.sa-east-1.rds.amazonaws.com'
+MYSQL_PORT = 3306
+MYSQL_USER = 'devariauser'
+MYSQL_PASSWORD = 'devaria-2020'
+
+MYSQL_DATABASE = 'gerenciador_tarefas'
+
 DEBUG = True

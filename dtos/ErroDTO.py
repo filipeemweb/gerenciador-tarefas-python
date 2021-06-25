@@ -1,4 +1,4 @@
 class ErroDTO:
-    def __init__(self, erro, status):
-        self.erro = erro
+    def __init__(self, status, erros):
         self.status = status
+        self.erros = erros

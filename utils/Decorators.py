@@ -4,10 +4,9 @@ from functools import wraps
 import jwt
 from flask import request, Response
 
-import config
 from dtos.ErroDTO import ErroDTO
-from dtos.UsuarioDTO import UsuarioBaseDTO
 from services import JWTService
+from services.UsuarioService import UsuarioService
 
 
 def token_required(f):
@@ -16,7 +15,7 @@ def token_required(f):
         headers = request.headers
         if 'Authorization' not in headers:
             return Response(
-                json.dumps(ErroDTO('É necessário um token para essa requisição.', 400).__dict__),
+                json.dumps(ErroDTO(400, 'É necessário um token para essa requisição.').__dict__),
                 status=400, mimetype='application/json'
             )
 
@@ -24,26 +23,33 @@ def token_required(f):
             # Pegar token no header
             token = str(headers['Authorization']).replace('Bearer ', '')
 
-            user_id = JWTService.decodificar_token(token)
+            id_usuario = JWTService.decodificar_token(token)
 
-            usuario_atual = UsuarioBaseDTO('Admin', config.LOGIN_TEST)
+            usuario_atual = UsuarioService().filter_by_id(id_usuario)
+
+            if not usuario_atual:
+                return Response(
+                    json.dumps(ErroDTO(401, 'Token inválido').__dict__),
+                    status=401, mimetype='application/json'
+                )
 
         except jwt.ExpiredSignatureError:
             return Response(
-                json.dumps(ErroDTO('Token expirado', 401).__dict__),
+                json.dumps(ErroDTO(401, 'Token expirado').__dict__),
                 status=401, mimetype='application/json'
             )
         except jwt.InvalidTokenError:
             return Response(
-                json.dumps(ErroDTO('Token inválido', 401).__dict__),
+                json.dumps(ErroDTO(401, 'Token inválido').__dict__),
                 status=401, mimetype='application/json'
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             return Response(
-                json.dumps(ErroDTO('Erro inesperado no servidor, favor tentar novamente', 500).__dict__),
+                json.dumps(ErroDTO(500, 'Erro inesperado no servidor, favor tentar novamente').__dict__),
                 status=500, mimetype='application/json'
             )
 
-        return f(usuario_atual, *args, **kwargs)
+        return f(usuario_atual)
 
     return decorated

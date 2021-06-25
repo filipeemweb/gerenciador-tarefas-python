@@ -4,6 +4,13 @@ class UsuarioBaseDTO:
         self.email = email
 
 
+class UsuarioCreateDTO(UsuarioBaseDTO):
+    def __init__(self, id, nome, email, senha):
+        super().__init__(nome, email)
+        self.id = id
+        self.senha = senha
+
+
 class UsuarioLoginDTO(UsuarioBaseDTO):
     def __init__(self, nome, email, token):
         super().__init__(nome, email)
