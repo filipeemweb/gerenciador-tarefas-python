@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Integer, String, inspect, MetaData
+from sqlalchemy import Column, Integer, String, inspect
+from sqlalchemy.orm import relationship
 
 import config
-from database.database import Base, engine
-
-metadata = MetaData()
+from database.database import Base, engine, metadata
 
 
 class Usuario(Base):
@@ -14,6 +13,7 @@ class Usuario(Base):
     nome = Column(String(100))
     email = Column(String(100))
     senha = Column(String(200))
+    tarefas = relationship('Tarefa')
 
 
 if not inspect(engine).has_table('usuario', schema=config.MYSQL_DATABASE):

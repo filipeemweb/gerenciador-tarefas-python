@@ -50,6 +50,6 @@ def token_required(f):
                 status=500, mimetype='application/json'
             )
 
-        return f(usuario_atual)
+        return f(usuario_atual, *args, **kwargs)
 
     return decorated
